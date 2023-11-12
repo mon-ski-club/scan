@@ -3,6 +3,7 @@ import { Injectable, isDevMode } from '@angular/core';
 import {
   RxCollection,
   RxDatabase,
+  RxDocument,
   addRxPlugin,
   createRxDatabase,
 } from 'rxdb';
@@ -17,8 +18,15 @@ import {
   getFetchWithCouchDBAuthorization,
 } from 'rxdb/plugins/replication-couchdb';
 import { v4 as uuid } from 'uuid';
+import { EVENT_SCHEMA } from '../event/event.schema';
+import { Event } from '../event/event';
+
+type EventDocumentMethods = {};
+export type EventDocument = RxDocument<Event, EventDocumentMethods>;
+export type EventCollection = RxCollection<Event, EventDocumentMethods, {}>;
 
 type ApplicationCollections = {
+  events: EventCollection;
 };
 
 var database: RxDatabase<ApplicationCollections> | null = null;
@@ -98,8 +106,13 @@ export async function createDatabase(
   console.debug('database created');
 
   await database.addCollections({
+    events: { schema: EVENT_SCHEMA },
   });
   console.debug('collections added');
+
+  database.collections.events.preInsert(function (event: Event) {
+    event.id = uuid();
+  }, false);
 
   // Synchronize with CouchDB
   // TODO: authenticate(settingsService, httpClient);
