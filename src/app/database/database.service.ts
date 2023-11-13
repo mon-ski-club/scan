@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, isDevMode } from '@angular/core';
+import { APP_INITIALIZER, Injectable, isDevMode } from '@angular/core';
 import {
   RxCollection,
   RxDatabase,
@@ -42,6 +42,9 @@ export class DatabaseService {
   }
 }
 
+/**
+ * Authenticate with CouchDB.
+ */
 function authenticate(
   settingsService: SettingsService,
   httpClient: HttpClient,
@@ -59,6 +62,9 @@ function authenticate(
   );
 }
 
+/**
+ * Synchronize with CouchDB.
+ */
 function replicate(
   settingsService: SettingsService,
   database: RxDatabase<any>,
@@ -93,7 +99,10 @@ function addPlugins() {
   }
 }
 
-export async function createDatabase(
+/**
+ * Factory function that creates the database on application startup.
+ */
+async function createDatabase(
   settingsService: SettingsService,
   httpClient: HttpClient,
 ): Promise<RxDatabase<ApplicationCollections>> {
@@ -115,10 +124,24 @@ export async function createDatabase(
   }, false);
 
   // Synchronize with CouchDB
-  // TODO: authenticate(settingsService, httpClient);
-  // TODO: replicate(settingsService, database, 'persons');
+  authenticate(settingsService, httpClient);
+  replicate(settingsService, database, 'events');
 
   console.debug('database synchronized');
 
   return database;
+}
+
+/**
+ * Angular provider for the database.
+ */
+export function provideDatabase() {
+  return {
+    provide: APP_INITIALIZER,
+    useFactory:
+      (settingsService: SettingsService, httpClient: HttpClient) => () =>
+        createDatabase(settingsService, httpClient),
+    multi: true,
+    deps: [SettingsService, HttpClient],
+  };
 }
