@@ -124,8 +124,8 @@ async function createDatabase(
   }, false)
 
   // Synchronize with CouchDB
-  authenticate(settingsService, httpClient);
-  replicate(settingsService, database, 'events');
+  authenticate(settingsService, httpClient)
+  replicate(settingsService, database, 'events')
 
   console.debug('database synchronized')
 
@@ -143,5 +143,5 @@ export function provideDatabase() {
         createDatabase(settingsService, httpClient),
     multi: true,
     deps: [SettingsService, HttpClient],
-  };
+  }
 }
