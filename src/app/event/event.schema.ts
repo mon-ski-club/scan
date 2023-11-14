@@ -2,7 +2,7 @@ import {
   ExtractDocumentTypeFromTypedRxJsonSchema,
   RxJsonSchema,
   toTypedRxJsonSchema,
-} from 'rxdb';
+} from 'rxdb'
 
 const EVENT_SCHEMA_LITERAL = {
   title: 'event schema',
@@ -24,12 +24,12 @@ const EVENT_SCHEMA_LITERAL = {
   },
   required: ['id', 'name', 'date'],
   indexes: ['name', 'date'],
-} as const;
+} as const
 
-const typedJsonSchema = toTypedRxJsonSchema(EVENT_SCHEMA_LITERAL);
+const typedJsonSchema = toTypedRxJsonSchema(EVENT_SCHEMA_LITERAL)
 
 export type Event = ExtractDocumentTypeFromTypedRxJsonSchema<
   typeof typedJsonSchema
->;
+>
 
-export const EVENT_SCHEMA: RxJsonSchema<Event> = EVENT_SCHEMA_LITERAL;
+export const EVENT_SCHEMA: RxJsonSchema<Event> = EVENT_SCHEMA_LITERAL

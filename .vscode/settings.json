@@ -1,0 +1,51 @@
+{
+  /*
+   * TypeScript
+   */
+  "typescript.tsdk": "node_modules/typescript/lib",
+  /**
+   * Formatting
+   */
+  // Format on save
+  "editor.formatOnSave": true,
+  // JSON formatting
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "cSpell.language": "en,fr",
+  /*
+   * Peacock
+   */
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#262d89",
+    "activityBar.background": "#262d89",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#ccc5c5",
+    "activityBarBadge.foreground": "#5a5252",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#262d89",
+    "statusBar.background": "#1b2061",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#262d89",
+    "statusBarItem.remoteBackground": "#1b2061",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#1b2061",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#1b206199",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "cSpell.words": ["devkit", "rxdb", "sidenav", "tscheck"]
+}

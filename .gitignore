@@ -37,7 +37,8 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# User's specifics
 .eslintrc.js
 .husky/*
-.prettierrc.js
+lint-staged.config.js
 
