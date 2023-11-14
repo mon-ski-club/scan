@@ -1,0 +1,56 @@
+/**
+ * Viewport
+ */
+.sidenav-container {
+  height: 100vh;
+}
+
+/**
+ * Navbar
+ */
+.mat-sidenav-content .mat-toolbar {
+  position: fixed;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+/**
+ * Drawer
+ */
+.sidenav {
+  width: 320px;
+}
+
+.mat-drawer-inner-container {
+  height: '100%';
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.drawer-header {
+  gap: 5px;
+}
+
+/**
+ * Main content 
+ */
+/* Drawer title */
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+/**
+ * Main content 
+ */
+.main-content {
+  margin-top: var(--mat-toolbar-standard-height);
+  padding: 20px;
+}
+
+.scan-icon {
+  height: 40px !important;
+  width: 40px !important;
+}

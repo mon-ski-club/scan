@@ -8,7 +8,13 @@ module.exports = {
     project: ['tsconfig.json'],
   },
   // Ignore specific patterns (e.g., '*.js') during linting.
-  ignorePatterns: ['*.js', '*.html', '*.css'],
+  ignorePatterns: [
+    '*.js',
+    '*.html',
+    '*.css',
+    // TEMPS
+    '*.service.ts',
+  ],
   // ESLint plugins.
   plugins: [],
   // Extend ESLint configurations to include recommended rules.

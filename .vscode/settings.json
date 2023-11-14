@@ -47,5 +47,5 @@
     "titleBar.inactiveBackground": "#1b206199",
     "titleBar.inactiveForeground": "#e7e7e799"
   },
-  "cSpell.words": ["tscheck"]
+  "cSpell.words": ["devkit", "rxdb", "sidenav", "tscheck"]
 }

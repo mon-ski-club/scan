@@ -2,14 +2,14 @@
   "name": "scan",
   "version": "0.0.0",
   "scripts": {
+    "build": "ng build",
+    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && rm -rf .angular && npm install",
+    "lint": "ng lint",
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "tscheck": "tsc --project tsconfig.json --pretty --noEmit",
-    "lint": "ng lint",
-    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && rm -rf .angular && npm install"
+    "watch": "ng build --watch --configuration development"
   },
   "private": true,
   "dependencies": {
@@ -25,7 +25,9 @@
     "@angular/router": "17.0.0",
     "rxjs": "7.8.0",
     "tslib": "2.3.0",
-    "zone.js": "0.14.2"
+    "zone.js": "0.14.2",
+    "@types/uuid": "9.0.7",
+    "rxdb": "14.17.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "17.0.0",
