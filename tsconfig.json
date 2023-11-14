@@ -1,33 +1,57 @@
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-  "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./dist/out-tsc",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true,
-    "sourceMap": true,
-    "declaration": false,
-    "downlevelIteration": true,
-    "experimentalDecorators": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
+    // Target version of ECMAScript.
     "target": "ES2022",
+    // List of libraries available to the TypeScript code.
+    "lib": ["ES2022", "dom"],
+    // Enable strict type checking.
+    "strict": true,
+    // Remove comments from the generated JavaScript.
+    "removeComments": true,
+    // Specify module system to use (ES2022).
     "module": "ES2022",
+    // Enable interoperability with CommonJS modules.
+    "esModuleInterop": true,
+    // Specify module resolution strategy (Node.js).
+    "moduleResolution": "Node",
+    // Output directory for transpiled TypeScript files.
+    "outDir": "./dist/out-tsc",
+    // Allow importing JSON files as modules.
+    "resolveJsonModule": true,
+    // Allow for JS files
+    "allowJs": true,
+    // Ensure modules are isolated with no global side-effects.
+    "isolatedModules": true,
+    // Enforce consistent casing in file names for module imports.
+    "forceConsistentCasingInFileNames": true,
+    // Enforce type safety when accessing object properties by index.
+    "noUncheckedIndexedAccess": true,
+    // Generate source maps for debugging
+    "sourceMap": true,
+    // Won't generate .d.ts files
+    "declaration": false,
+    // Enables support for experimental ECMAScript decorators.
+    "experimentalDecorators": true,
+    // Reduce duplication of helper code in the generated JavaScript.
+    "importHelpers": true,
+    // TypeScript will use the legacy approach for handling class fields
     "useDefineForClassFields": false,
-    "lib": [
-      "ES2022",
-      "dom"
-    ]
+    // Enable support for a more accurate implementation
+    "downlevelIteration": true
   },
   "angularCompilerOptions": {
+    // The application is not using the legacy message ID format.
     "enableI18nLegacyMessageIdFormat": false,
+    // TypeScript performs rigorous checks to ensure correct and type-safe dependency injection.
     "strictInjectionParameters": true,
+    // Require explicit access modifiers for input properties, promoting encapsulation.
     "strictInputAccessModifiers": true,
+    // TypeScript performs additional checks on template expressions and bindings.
     "strictTemplates": true
-  }
+  },
+  // Include TypeScript source files.
+  "include": ["**/*.ts"],
+  // Exclude node_modules directory from compilation.
+  "exclude": ["node_modules"]
 }

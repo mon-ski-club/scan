@@ -1,0 +1,38 @@
+<!-- Main layout (Navbar + Drawer) -->
+<mat-sidenav-container class="sidenav-container">
+  <!-- Navbar -->
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button type="button" mat-icon-button (click)="drawer.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <mat-icon svgIcon="scan" class="scan-icon"></mat-icon>
+      <span>SCAN</span>
+    </mat-toolbar>
+    <!-- Children (Routes defined in app.routes) -->
+    <div class="main-content">
+      <router-outlet />
+    </div>
+  </mat-sidenav-content>
+
+  <!-- Drawer -->
+  <mat-sidenav #drawer class="sidenav" fixedInViewport>
+    <div>
+      <mat-toolbar class="drawer-header">
+        <mat-icon svgIcon="scan" class="scan-icon" /> Ski Club Annecy Novel
+        <button type="button" mat-icon-button (click)="drawer.toggle()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-toolbar>
+      <mat-nav-list (click)="drawer.toggle()">
+        <a mat-list-item routerLink="home">Home</a>
+        <a mat-list-item routerLink="events">Events</a>
+      </mat-nav-list>
+    </div>
+    <mat-toolbar>
+      <a href="https://www.facebook.com/skiclubannecynovel/" target="_blank">
+        <mat-icon>facebook</mat-icon>
+      </a>
+    </mat-toolbar>
+  </mat-sidenav>
+</mat-sidenav-container>

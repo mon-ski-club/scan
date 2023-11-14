@@ -1,35 +1,35 @@
-import { HttpClient } from '@angular/common/http';
-import { APP_INITIALIZER, Injectable, isDevMode } from '@angular/core';
+import { HttpClient } from '@angular/common/http'
+import { APP_INITIALIZER, Injectable, isDevMode } from '@angular/core'
 import {
   RxCollection,
   RxDatabase,
   RxDocument,
   addRxPlugin,
   createRxDatabase,
-} from 'rxdb';
-import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
-import { SettingsService } from '../settings/settings.service';
-import { RxDBAttachmentsPlugin } from 'rxdb/plugins/attachments';
-import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election';
-import { RxDBQueryBuilderPlugin } from 'rxdb/plugins/query-builder';
-import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
+} from 'rxdb'
+import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie'
+import { SettingsService } from '../settings/settings.service'
+import { RxDBAttachmentsPlugin } from 'rxdb/plugins/attachments'
+import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election'
+import { RxDBQueryBuilderPlugin } from 'rxdb/plugins/query-builder'
+import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode'
 import {
   replicateCouchDB,
   getFetchWithCouchDBAuthorization,
-} from 'rxdb/plugins/replication-couchdb';
-import { v4 as uuid } from 'uuid';
-import { EVENT_SCHEMA } from '../event/event.schema';
-import { Event } from '../event/event';
+} from 'rxdb/plugins/replication-couchdb'
+import { v4 as uuid } from 'uuid'
+import { EVENT_SCHEMA } from '../event/event.schema'
+import { Event } from '../event/event'
 
-type EventDocumentMethods = {};
-export type EventDocument = RxDocument<Event, EventDocumentMethods>;
-export type EventCollection = RxCollection<Event, EventDocumentMethods, {}>;
+interface EventDocumentMethods {}
+export type EventDocument = RxDocument<Event, EventDocumentMethods>
+export type EventCollection = RxCollection<Event, EventDocumentMethods, {}>
 
-type ApplicationCollections = {
-  events: EventCollection;
-};
+interface ApplicationCollections {
+  events: EventCollection
+}
 
-var database: RxDatabase<ApplicationCollections> | null = null;
+let database: RxDatabase<ApplicationCollections> | null = null
 
 @Injectable({
   providedIn: 'root',
@@ -38,7 +38,7 @@ export class DatabaseService {
   constructor() {}
 
   get(): RxDatabase<ApplicationCollections> {
-    return database!;
+    return database!
   }
 }
 
@@ -59,7 +59,7 @@ function authenticate(
       headers: { 'Content-Type': 'application/json' },
       withCredentials: true,
     },
-  );
+  )
 }
 
 /**
@@ -70,7 +70,7 @@ function replicate(
   database: RxDatabase<any>,
   collectionName: string,
 ) {
-  const collection: RxCollection<any> = database.collections[collectionName];
+  const collection: RxCollection<any> = database.collections[collectionName]
   replicateCouchDB({
     collection: collection,
     url: `${settingsService.url}/${collectionName}/`,
@@ -81,21 +81,21 @@ function replicate(
     ),
     pull: {},
     push: {},
-  });
+  })
 
   collection
     .count()
     .exec()
-    .then((c) => console.debug(`${collectionName} synchronized: ${c}`));
+    .then((c) => console.debug(`${collectionName} synchronized: ${c}`))
 }
 
 function addPlugins() {
-  addRxPlugin(RxDBAttachmentsPlugin);
-  addRxPlugin(RxDBLeaderElectionPlugin);
-  addRxPlugin(RxDBQueryBuilderPlugin);
+  addRxPlugin(RxDBAttachmentsPlugin)
+  addRxPlugin(RxDBLeaderElectionPlugin)
+  addRxPlugin(RxDBQueryBuilderPlugin)
 
   if (isDevMode()) {
-    addRxPlugin(RxDBDevModePlugin);
+    addRxPlugin(RxDBDevModePlugin)
   }
 }
 
@@ -106,30 +106,30 @@ async function createDatabase(
   settingsService: SettingsService,
   httpClient: HttpClient,
 ): Promise<RxDatabase<ApplicationCollections>> {
-  addPlugins();
+  addPlugins()
 
   database = await createRxDatabase<ApplicationCollections>({
     name: 'scan',
     storage: getRxStorageDexie(),
-  });
-  console.debug('database created');
+  })
+  console.debug('database created')
 
   await database.addCollections({
     events: { schema: EVENT_SCHEMA },
-  });
-  console.debug('collections added');
+  })
+  console.debug('collections added')
 
   database.collections.events.preInsert(function (event: Event) {
-    event.id = uuid();
-  }, false);
+    event.id = uuid()
+  }, false)
 
   // Synchronize with CouchDB
   authenticate(settingsService, httpClient);
   replicate(settingsService, database, 'events');
 
-  console.debug('database synchronized');
+  console.debug('database synchronized')
 
-  return database;
+  return database
 }
 
 /**
