@@ -11,7 +11,6 @@ import { DomSanitizer } from '@angular/platform-browser'
   standalone: true,
   imports: [CommonModule, RouterOutlet, HttpClientModule, MatIconModule],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
   constructor(
