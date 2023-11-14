@@ -4,13 +4,9 @@ import { Injectable } from '@angular/core'
   providedIn: 'root',
 })
 export class SettingsService {
-  url: string | null = null
-  user: string | null = null
-  password: string | null = null
+  url = localStorage.getItem('url') || 'http://localhost:5984'
+  user = localStorage.getItem('user') || 'admin'
+  password = localStorage.getItem('password') || 'secret'
 
-  constructor() {
-    this.url = localStorage.getItem('url')
-    this.user = localStorage.getItem('user')
-    this.password = localStorage.getItem('password')
-  }
+  constructor() {}
 }
