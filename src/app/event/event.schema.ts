@@ -1,8 +1,11 @@
 import {
   ExtractDocumentTypeFromTypedRxJsonSchema,
+  RxCollection,
+  RxDocument,
   RxJsonSchema,
   toTypedRxJsonSchema,
 } from 'rxdb'
+import { Event } from '../event/event'
 
 const EVENT_SCHEMA_LITERAL = {
   title: 'event schema',
@@ -27,9 +30,12 @@ const EVENT_SCHEMA_LITERAL = {
 } as const
 
 const typedJsonSchema = toTypedRxJsonSchema(EVENT_SCHEMA_LITERAL)
-
-export type Event = ExtractDocumentTypeFromTypedRxJsonSchema<
+type EventDocType = ExtractDocumentTypeFromTypedRxJsonSchema<
   typeof typedJsonSchema
 >
 
-export const EVENT_SCHEMA: RxJsonSchema<Event> = EVENT_SCHEMA_LITERAL
+interface EventOrmMethods {}
+
+export const EVENT_SCHEMA: RxJsonSchema<EventDocType> = EVENT_SCHEMA_LITERAL
+export type EventDocument = RxDocument<Event, EventOrmMethods>
+export type EventCollection = RxCollection<Event, EventOrmMethods, {}>

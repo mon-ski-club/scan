@@ -1,12 +1,6 @@
 import { HttpClient } from '@angular/common/http'
 import { APP_INITIALIZER, Injectable, isDevMode } from '@angular/core'
-import {
-  RxCollection,
-  RxDatabase,
-  RxDocument,
-  addRxPlugin,
-  createRxDatabase,
-} from 'rxdb'
+import { RxCollection, RxDatabase, addRxPlugin, createRxDatabase } from 'rxdb'
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie'
 import { SettingsService } from '../settings/settings.service'
 import { RxDBAttachmentsPlugin } from 'rxdb/plugins/attachments'
@@ -18,15 +12,14 @@ import {
   getFetchWithCouchDBAuthorization,
 } from 'rxdb/plugins/replication-couchdb'
 import { v4 as uuid } from 'uuid'
-import { EVENT_SCHEMA } from '../event/event.schema'
+import { EVENT_SCHEMA, EventCollection } from '../event/event.schema'
 import { Event } from '../event/event'
-
-interface EventDocumentMethods {}
-export type EventDocument = RxDocument<Event, EventDocumentMethods>
-export type EventCollection = RxCollection<Event, EventDocumentMethods, {}>
+import { PERSON_SCHEMA, PersonCollection } from '../person/person.schema'
+import { Person } from '../person/person'
 
 interface ApplicationCollections {
   events: EventCollection
+  persons: PersonCollection
 }
 
 let database: RxDatabase<ApplicationCollections> | null = null
@@ -116,6 +109,7 @@ async function createDatabase(
 
   await database.addCollections({
     events: { schema: EVENT_SCHEMA },
+    persons: { schema: PERSON_SCHEMA },
   })
   console.debug('collections added')
 
@@ -123,9 +117,14 @@ async function createDatabase(
     event.id = uuid()
   }, false)
 
+  database.collections.persons.preInsert(function (person: Person) {
+    person.id = uuid()
+  }, false)
+
   // Synchronize with CouchDB
   authenticate(settingsService, httpClient)
   replicate(settingsService, database, 'events')
+  replicate(settingsService, database, 'persons')
 
   console.debug('database synchronized')
 
