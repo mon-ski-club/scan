@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "build": "ng build",
+    "db:up": "docker-compose -f docker/docker-compose.db.yml up",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && rm -rf .angular && npm install",
     "lint": "ng lint",
     "ng": "ng",
