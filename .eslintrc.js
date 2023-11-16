@@ -103,5 +103,11 @@ module.exports = {
         ],
       },
     },
+    {
+      files: ['environment.type.ts'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+      },
+    },
   ],
 }
