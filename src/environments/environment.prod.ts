@@ -13,8 +13,8 @@ export const environment: EnvironmentProps = {
   // Database config
   DATABASE: {
     name: 'scan-prod',
-    multiInstances: true,
-    realTimeReplications: true,
+    multiInstance: true,
+    realTimeReplication: true,
     credentials: {
       name: 'admin',
       password: 'secret',
