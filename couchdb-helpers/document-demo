@@ -1,0 +1,57 @@
+#!/bin/bash
+source environment
+    
+log() {
+    echo -e "\e[32m$1\e[39m"
+}
+
+createDocument() {
+    DATABASE=$1
+    USER=$2
+    PASSWORD=$3
+    ID=$(uuidgen)
+    if [ -z "$USER" ]; then
+        log "Create documents [database=$DATABASE]"
+        curl -X PUT $SCHEME://$HOST:$PORT/$DATABASE/$ID \
+             -H "Accept: application/json" \
+             -H "Content-Type: application/json" \
+             -d "{\"name\": \"data\"}"
+    else
+        log "Create documents [database=$DATABASE, user=$USER]"
+        curl -X PUT $SCHEME://$USER:$PASSWORD@$HOST:$PORT/$DATABASE/$ID \
+             -H "Accept: application/json" \
+             -H "Content-Type: application/json" \
+             -d "{\"name\": \"data\"}"
+    fi
+}
+
+listDocument() {
+    DATABASE=$1
+    USER=$2
+    PASSWORD=$3
+    if [ -z "$USER" ]; then
+        log "List [database=$DATABASE]"
+        curl -X GET $SCHEME://$HOST:$PORT/$DATABASE/_all_docs?filter=events/filterFunction1 \
+             -H "Accept: application/json" \
+             -H "Content-Type: application/json"
+    #          -d "{\"name\": \"$USER\", \"password\": \"$PASSWORD\", \"roles\": [], \"type\": \"user\"}"
+    else
+        log "List [database=$DATABASE, user=$USER]"
+        curl -X GET $SCHEME://$USER:$PASSWORD@$HOST:$PORT/$DATABASE/_all_docs?filter=events/filterFunction1 \
+             -H "Accept: application/json" \
+             -H "Content-Type: application/json"
+             # -d "{\"name\": \"$USER\", \"password\": \"$PASSWORD\", \"roles\": [], \"type\": \"user\"}"
+    fi
+}
+
+createDocument events
+createDocument events alice alice
+createDocument events bob bob
+
+listDocument events
+listDocument events alice alice
+listDocument events bob bob
+
+listDocument persons
+listDocument persons alice alice
+listDocument persons bob bob
