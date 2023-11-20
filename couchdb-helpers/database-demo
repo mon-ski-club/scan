@@ -10,39 +10,38 @@ log() {
 
 deleteDatabase() {
     DATABASE=$1
-    USER=$2
-    PASSWORD=$3
     log "Delete database"
-    curl -X DELETE $SCHEME://$USER:$PASSWORD@$HOST:$PORT/$DATABASE \
+    curl -X DELETE $SCHEME://$ADMIN_USER:$ADMIN_PASSWORD@$HOST:$PORT/$DATABASE \
          -H "Accept: application/json"
 }
 
 createDatabase() {
     DATABASE=$1
-    USER=$2
-    PASSWORD=$3
     log "Create database"
-    curl -X PUT $SCHEME://$USER:$PASSWORD@$HOST:$PORT/$DATABASE \
+    curl -X PUT $SCHEME://$ADMIN_USER:$ADMIN_PASSWORD@$HOST:$PORT/$DATABASE \
          -H "Accept: application/json"
 }
 
 restrictDatabase() {
     DATABASE=$1
-    USER=$2
-    PASSWORD=$3
+    ROLE=$2
 
     read -r -d '' DATA << EOM
 {
   "_id": "_design/_auth",
   "language": "javascript",
-  "validate_doc_update": "function(newDoc, oldDoc, userCtx, secObj) { if (userCtx.roles.indexOf('manager') !== 0) { throw ('You are not allowed to write this db.') }}"
+  "validate_doc_update": "function(newDoc, oldDoc, userCtx, secObj) { if (userCtx.roles.indexOf('$ROLE') !== 0) { throw ('You are not allowed to write this db.') }}"
 }
 EOM
 
-    curl -X PUT $SCHEME://$USER:$PASSWORD@$HOST:$PORT/$DATABASE/_design/_auth \
+    curl -X PUT $SCHEME://$ADMIN_USER:$ADMIN_PASSWORD@$HOST:$PORT/$DATABASE/_design/_auth \
          -H "Accept: application/json" \
          -H "Content-Type: application/json" \
          -d "$DATA"
+
+    curl -X PUT $SCHEME://$ADMIN_USER:$ADMIN_PASSWORD@$HOST:$PORT/$DATABASE/_security \
+         -H "Content-Type: application/json" \
+         -d "{\"admins\": { \"names\": [], \"roles\": [] }, \"members\": { \"names\": [\"\"], \"roles\": [\"$ROLE\"] } }"
 }
 
 createUser() {
@@ -56,19 +55,18 @@ createUser() {
          -d "{\"name\": \"$USER\", \"password\": \"$PASSWORD\", \"roles\": [\"$ROLE\"], \"type\": \"user\"}"
 }
 
-deleteDatabase _users $ADMIN_USER $ADMIN_PASSWORD
-deleteDatabase events $ADMIN_USER $ADMIN_PASSWORD
-deleteDatabase persons $ADMIN_USER $ADMIN_PASSWORD
+deleteDatabase _users
+deleteDatabase events
+deleteDatabase persons
 
-createDatabase _users $ADMIN_USER $ADMIN_PASSWORD
-createDatabase events $ADMIN_USER $ADMIN_PASSWORD
-createDatabase persons $ADMIN_USER $ADMIN_PASSWORD
+createDatabase _users
+createDatabase events
+createDatabase persons
 
-restrictDatabase events $ADMIN_USER $ADMIN_PASSWORD
-restrictDatabase persons $ADMIN_USER $ADMIN_PASSWORD
+restrictDatabase events manager
+restrictDatabase persons manager
 
 # TODO: remove testing purposes users creation
 createUser alice alice manager
 createUser bob bob member
 createUser carol carol
-

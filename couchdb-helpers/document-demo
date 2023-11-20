@@ -52,6 +52,10 @@ listDocument events
 listDocument events alice alice
 listDocument events bob bob
 
+createDocument persons
+createDocument persons alice alice
+createDocument persons bob bob
+
 listDocument persons
 listDocument persons alice alice
 listDocument persons bob bob
