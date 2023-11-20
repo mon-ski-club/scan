@@ -1,0 +1,72 @@
+#!/bin/bash
+source environment
+
+export ADMIN_USER=admin
+export ADMIN_PASSWORD=secret
+
+log() {
+    echo -e "\e[32m$1\e[39m"
+}
+
+deleteDatabase() {
+    DATABASE=$1
+    log "Delete database"
+    curl -X DELETE $SCHEME://$ADMIN_USER:$ADMIN_PASSWORD@$HOST:$PORT/$DATABASE \
+         -H "Accept: application/json"
+}
+
+createDatabase() {
+    DATABASE=$1
+    log "Create database"
+    curl -X PUT $SCHEME://$ADMIN_USER:$ADMIN_PASSWORD@$HOST:$PORT/$DATABASE \
+         -H "Accept: application/json"
+}
+
+restrictDatabase() {
+    DATABASE=$1
+    ROLE=$2
+
+    read -r -d '' DATA << EOM
+{
+  "_id": "_design/_auth",
+  "language": "javascript",
+  "validate_doc_update": "function(newDoc, oldDoc, userCtx, secObj) { if (userCtx.roles.indexOf('$ROLE') !== 0) { throw ('You are not allowed to write this db.') }}"
+}
+EOM
+
+    curl -X PUT $SCHEME://$ADMIN_USER:$ADMIN_PASSWORD@$HOST:$PORT/$DATABASE/_design/_auth \
+         -H "Accept: application/json" \
+         -H "Content-Type: application/json" \
+         -d "$DATA"
+
+    curl -X PUT $SCHEME://$ADMIN_USER:$ADMIN_PASSWORD@$HOST:$PORT/$DATABASE/_security \
+         -H "Content-Type: application/json" \
+         -d "{\"admins\": { \"names\": [], \"roles\": [] }, \"members\": { \"names\": [\"\"], \"roles\": [\"$ROLE\"] } }"
+}
+
+createUser() {
+    USER=$1
+    PASSWORD=$2
+    ROLE=$3
+    log "Create user [user=$USER]"
+    curl -X PUT $SCHEME://$ADMIN_USER:$ADMIN_PASSWORD@$HOST:$PORT/_users/org.couchdb.user:$USER \
+         -H "Accept: application/json" \
+         -H "Content-Type: application/json" \
+         -d "{\"name\": \"$USER\", \"password\": \"$PASSWORD\", \"roles\": [\"$ROLE\"], \"type\": \"user\"}"
+}
+
+deleteDatabase _users
+deleteDatabase events
+deleteDatabase persons
+
+createDatabase _users
+createDatabase events
+createDatabase persons
+
+restrictDatabase events manager
+restrictDatabase persons manager
+
+# TODO: remove testing purposes users creation
+createUser alice alice manager
+createUser bob bob member
+createUser carol carol
