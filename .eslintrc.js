@@ -8,13 +8,7 @@ module.exports = {
     project: ['tsconfig.json'],
   },
   // Ignore specific patterns (e.g., '*.js') during linting.
-  ignorePatterns: [
-    '*.js',
-    '*.html',
-    '*.css',
-    // TEMPS
-    '*.service.ts',
-  ],
+  ignorePatterns: ['*.js', '*.html', '*.css'],
   // ESLint plugins.
   plugins: [],
   // Extend ESLint configurations to include recommended rules.
@@ -101,6 +95,20 @@ module.exports = {
             style: 'kebab-case',
           },
         ],
+      },
+    },
+    {
+      files: ['environment.type.ts'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+      },
+    },
+
+    {
+      files: ['database.service.ts'],
+      rules: {
+        // Warn on the use of console.log() allow console.error/warn().
+        'no-console': ['error', { allow: ['debug', 'error'] }],
       },
     },
   ],

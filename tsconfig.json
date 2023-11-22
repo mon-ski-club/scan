@@ -51,7 +51,7 @@
     "strictTemplates": true
   },
   // Include TypeScript source files.
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "src/app/core/database/SAVE"],
   // Exclude node_modules directory from compilation.
   "exclude": ["node_modules"]
 }
