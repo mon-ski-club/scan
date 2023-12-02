@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "build": "ng build",
-    "db:up": "docker-compose -f docker/docker-compose.db.yml up",
+    "db:up": "docker-compose -f docker/docker-compose.db.yml up --build -d",
+    "db:init": "docker exec -it scan-couch-db sh /scan/init/init.sh",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && rm -rf .angular && npm install",
     "lint": "ng lint",
     "ng": "ng",
-    "start": "ng serve",
+    "start": "npm run db:up && npm run db:init && ng serve",
     "test": "ng test",
     "tscheck": "tsc --project tsconfig.json --pretty --noEmit",
     "watch": "ng build --watch --configuration development"

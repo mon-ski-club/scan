@@ -1,0 +1,33 @@
+.modern-login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: '100%';
+}
+
+.modern-login-card {
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modern-form-field {
+  margin-top: 10px;
+}
+.modern-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.modern-form-column {
+  margin-bottom: 15px;
+}
+
+.modern-form-field {
+  width: 100%;
+}
+
+.modern-form-button {
+  margin-top: 15px;
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "name": "_users"
+  },
+  {
+    "name": "persons",
+    "security": {
+      "admins": {
+        "roles": ["_manager"]
+      },
+      "members": {
+        "roles": ["_manager"]
+      }
+    }
+  },
+  {
+    "name": "events",
+    "security": {
+      "admins": {
+        "roles": []
+      },
+      "members": {
+        "roles": []
+      }
+    }
+  }
+]

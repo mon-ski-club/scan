@@ -55,7 +55,10 @@ module.exports = {
     'spaced-comment': 'error',
 
     // Enforce TypeScript report unused variables in the code.
-    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { ignoreRestSiblings: true },
+    ],
 
     // Disable the requirement for explicitly specifying module boundary types in TypeScript functions.
     '@typescript-eslint/explicit-module-boundary-types': 'off',
@@ -105,7 +108,7 @@ module.exports = {
     },
 
     {
-      files: ['database.service.ts'],
+      files: ['database.service.ts', 'auth.service.ts'],
       rules: {
         // Warn on the use of console.log() allow console.error/warn().
         'no-console': ['error', { allow: ['debug', 'error'] }],
