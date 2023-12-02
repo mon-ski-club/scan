@@ -1,8 +1,17 @@
-# Use the official CouchDB image
-FROM couchdb 
+# STEP 1
+# ======
+FROM couchdb
 
-# Add custom configuration files
-COPY local.ini /opt/couchdb/etc/local.d/local.ini
+# Define the base directory for our app
+WORKDIR /scan
 
-# Run CouchDB
+# Install jq inside the container, needed to parse JSON responses
+RUN apt-get update && apt-get install -y jq
+
+# Copy configuration files
+COPY .env .
+COPY init ./init
+COPY local.ini /opt/couchdb/etc/local.d/
+
+# For example, CMD to start CouchDB
 CMD ["couchdb"]

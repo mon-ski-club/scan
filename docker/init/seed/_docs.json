@@ -1,0 +1,176 @@
+{
+  "events": [
+    {
+      "_id": "308d84370bb04c32a4a57cbf644ca422",
+      "name": "Chamonix",
+      "date": "2023-12-01",
+      "description": "Snowy day with excellent powder conditions at Chamonix!",
+      "cancelled": false,
+      "image": "https://images.pexels.com/photos/158089/aiguille-du-midi-chamonix-mountain-station-mont-blanc-158089.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      "location": "French Alps",
+      "archived": false
+    },
+    {
+      "_id": "41e6f13923c3471a871f-8a6141b29c80",
+      "name": "Zermatt",
+      "date": "2023-12-05",
+      "description": "Clear skies and perfect skiing weather await at Zermatt!",
+      "cancelled": false,
+      "image": "https://images.pexels.com/photos/267104/pexels-photo-267104.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      "location": "Swiss Alps",
+      "archived": false
+    },
+    {
+      "_id": "d583e81b737a4c338f3fc54454b3d34d",
+      "name": "St. Anton",
+      "date": "2023-12-10",
+      "description": "Fresh powder and a light snowfall create a magical atmosphere at St. Anton!",
+      "cancelled": false,
+      "image": "https://images.pexels.com/photos/580151/pexels-photo-580151.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      "location": "Austrian Alps",
+      "archived": false
+    },
+    {
+      "_id": "8efe28899925413daba6762d9e42964b",
+      "name": "Verbier",
+      "date": "2023-12-15",
+      "description": "Sunny day with optimal skiing conditions in Verbier!",
+      "cancelled": false,
+      "image": "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      "location": "Swiss Alps",
+      "archived": false
+    },
+    {
+      "_id": "4cbc7fb3dfba4184810f8809f13e5709",
+      "name": "Kitzbühel",
+      "date": "2023-12-20",
+      "description": "Enjoy the festive season with great skiing weather at Kitzbühel!",
+      "cancelled": false,
+      "image": "https://images.pexels.com/photos/691668/pexels-photo-691668.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      "location": "Austrian Alps",
+      "archived": false
+    },
+    {
+      "_id": "cce80d0c951040acac7ee7ae8cc0b374",
+      "name": "Courchevel",
+      "date": "2023-12-25",
+      "description": "Christmas day skiing with beautiful snowfall at Courchevel!",
+      "cancelled": false,
+      "image": "https://images.pexels.com/photos/1670187/pexels-photo-1670187.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      "location": "French Alps",
+      "archived": false
+    },
+    {
+      "_id": "cbdefeb41fb4457a999f5c9cfdd12861",
+      "name": "St. Moritz",
+      "date": "2023-12-30",
+      "description": "Ring in the New Year with glamorous skiing conditions at St. Moritz!",
+      "cancelled": false,
+      "image": "https://images.pexels.com/photos/672451/pexels-photo-672451.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      "location": "Swiss Alps",
+      "archived": false
+    },
+    {
+      "_id": "a0cdaf6bb69a412baf5ec5244a5259be",
+      "name": "Ischgl",
+      "date": "2024-01-05",
+      "description": "Start the year with exciting skiing adventures in Ischgl!",
+      "cancelled": false,
+      "image": "https://images.pexels.com/photos/572897/pexels-photo-572897.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      "location": "Austrian Alps",
+      "archived": false
+    },
+    {
+      "_id": "ed6e13f432e04da689aa1a0c0b89bb4d",
+      "name": "Arosa",
+      "date": "2024-01-10",
+      "description": "Discover the beauty of Arosa with perfect skiing conditions!",
+      "cancelled": false,
+      "image": "https://images.pexels.com/photos/633198/pexels-photo-633198.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      "location": "Swiss Alps",
+      "archived": false
+    },
+    {
+      "_id": "e5d14fdc7bd245fdb1f93e5f3b1546fe",
+      "name": "Megève",
+      "date": "2024-01-15",
+      "description": "Experience the charm of Megève with delightful skiing weather!",
+      "cancelled": false,
+      "image": "https://images.pexels.com/photos/270756/pexels-photo-270756.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      "location": "French Alps",
+      "archived": false
+    }
+  ],
+  "persons": [
+    {
+      "_id": "85421d2eee434057813d1f652a9d02a0",
+      "firstName": "Alice",
+      "lastName": "Adams",
+      "gender": "Female",
+      "birthDate": "1990-08-15",
+      "address": "456 Oak Avenue",
+      "zip": "67890",
+      "city": "Townsville",
+      "email": "alice.adams@example.com",
+      "phone1": "555-4321",
+      "phone2": "555-8765",
+      "archived": false
+    },
+    {
+      "_id": "a59a53043ea641f4b380d660e2d8b4f8",
+      "firstName": "Bob",
+      "lastName": "Baker",
+      "gender": "Male",
+      "birthDate": "1985-05-20",
+      "address": "123 Main Street",
+      "zip": "12345",
+      "city": "Cityville",
+      "email": "bob.baker@example.com",
+      "phone1": "555-1234",
+      "phone2": "555-5678",
+      "archived": false
+    },
+    {
+      "_id": "3d7f5fca44064789b52f8839d672c488",
+      "firstName": "Carol",
+      "lastName": "Clark",
+      "gender": "Male",
+      "birthDate": "1982-03-10",
+      "address": "789 Pine Street",
+      "zip": "54321",
+      "city": "Villagetown",
+      "email": "carol.clark@example.com",
+      "phone1": "555-5678",
+      "phone2": "555-4321",
+      "archived": false
+    },
+    {
+      "_id": "5e5335ab7e2844dfaf8d71d5b0b05f88",
+      "firstName": "Dave",
+      "lastName": "Devis",
+      "gender": "Female",
+      "birthDate": "1995-12-05",
+      "address": "101 Cedar Road",
+      "zip": "98765",
+      "city": "Hamletville",
+      "email": "dave.devis@example.com",
+      "phone1": "555-8765",
+      "phone2": "555-1234",
+      "archived": false
+    },
+    {
+      "_id": "defed3139178411d9cb51411e25d8b00",
+      "firstName": "Eve",
+      "lastName": "Evans",
+      "gender": "Male",
+      "birthDate": "1988-06-25",
+      "address": "202 Birch Lane",
+      "zip": "13579",
+      "city": "Cityburg",
+      "email": "eve.evans@example.com",
+      "phone1": "555-3456",
+      "phone2": "555-6789",
+      "archived": false
+    }
+  ]
+}
