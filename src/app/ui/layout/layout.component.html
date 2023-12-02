@@ -3,13 +3,28 @@
   <!-- Navbar -->
   <mat-sidenav-content>
     <mat-toolbar color="primary">
-      <button type="button" mat-icon-button (click)="drawer.toggle()">
-        <mat-icon>menu</mat-icon>
+      <div>
+        <button type="button" mat-icon-button (click)="drawer.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
+      <span style="font-size: medium; text-transform: capitalize">
+        {{
+          currentUser ? currentUser.name + ' - ' + currentUser.roles : 'Invité'
+        }}
+      </span>
+
+      <button
+        *ngIf="!isLoggedIn"
+        type="button"
+        mat-icon-button
+        routerLink="login"
+      >
+        <mat-icon>person</mat-icon>
       </button>
-      <mat-icon svgIcon="scan" class="scan-icon"></mat-icon>
-      <span>SCAN</span>
+
+      <app-logout *ngIf="isLoggedIn" />
     </mat-toolbar>
-    <!-- Children (Routes defined in app.routes) -->
     <div class="main-content">
       <router-outlet />
     </div>
