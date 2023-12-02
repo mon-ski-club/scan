@@ -16,7 +16,7 @@ import { ToasterService } from '../../../../core/toast/toast.service'
 })
 export class LogoutComponent {
   private authService = inject(AuthService)
-  private toaster = inject(ToasterService)
+  private toasterService = inject(ToasterService)
 
   /**
    * Handle the logout process.
@@ -25,9 +25,9 @@ export class LogoutComponent {
   async onLogout() {
     try {
       this.authService.logout()
-      this.toaster.open('You have been logged out successfully')
+      this.toasterService.open('You have been logged out successfully')
     } catch (error) {
-      this.toaster.open('Logout failed. Please try again.')
+      this.toasterService.open('Logout failed. Please try again.')
     }
   }
 }

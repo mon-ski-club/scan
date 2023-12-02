@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
 
   private fb = inject(FormBuilder)
   private authService = inject(AuthService)
-  private toaster = inject(ToasterService)
+  private toasterService = inject(ToasterService)
   private router = inject(Router)
 
   constructor() {
@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
 
     if (isUserAuthenticated) {
       this.router.navigate(['home'])
-      this.toaster.open('Already Logged In.')
+      this.toasterService.open('Already Logged In.')
     }
   }
 
@@ -68,19 +68,21 @@ export class LoginComponent implements OnInit {
 
         if (user) {
           this.router.navigate(['home'])
-          this.toaster.open(
+          this.toasterService.open(
             `Logged in successfully ! (${user.name.toUpperCase()} - ${
               user.roles[0] ? user.roles[0].toUpperCase() : null
             })`,
           )
         } else {
-          this.toaster.open('Incorrect login credentials. Please try again.')
+          this.toasterService.open(
+            'Incorrect login credentials. Please try again.',
+          )
         }
       } catch (error) {
-        this.toaster.open('Login failed. Please try again.')
+        this.toasterService.open('Login failed. Please try again.')
       }
     } else {
-      this.toaster.open('Please fill in all required fields.')
+      this.toasterService.open('Please fill in all required fields.')
     }
   }
 }
