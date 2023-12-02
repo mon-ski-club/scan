@@ -9,11 +9,13 @@ import { Router } from '@angular/router'
 import { LoginRequest, LoginResponse, User, VerifySession } from './auth.type'
 import { firstValueFrom } from 'rxjs'
 import { environment } from '../../../environments/environment'
+import { LocalStorageService } from '../local-storage/local-storage.service'
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient)
   private router = inject(Router)
+  private localStorage = inject(LocalStorageService)
 
   /**
    * UserContext
@@ -45,7 +47,7 @@ export class AuthService {
       if (response.ok) {
         const { ok, ...user } = response
         if (user.name) {
-          localStorage.setItem('user', JSON.stringify(user))
+          this.localStorage.set<User>('user', user)
           this.setUserSignal(user)
           return user
         } else {
@@ -82,7 +84,7 @@ export class AuthService {
       )
 
       if (response.ok) {
-        localStorage.removeItem('user')
+        this.localStorage.clear()
         this.resetUserSignal()
         this.router.navigate(['/login'])
       } else {
@@ -119,17 +121,17 @@ export class AuthService {
           this.setUserSignal(user)
           return true // User is authenticated
         } else {
-          localStorage.removeItem('user')
+          this.localStorage.clear()
           this.resetUserSignal()
           return false // User is not authenticated
         }
       } else {
-        localStorage.removeItem('user')
+        this.localStorage.clear()
         this.resetUserSignal()
         throw 'CouchDB operation failed'
       }
     } catch (error) {
-      localStorage.removeItem('user')
+      this.localStorage.clear()
       this.resetUserSignal()
       return false
     }

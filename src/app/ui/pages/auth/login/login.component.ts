@@ -6,12 +6,12 @@ import {
   Validators,
 } from '@angular/forms'
 import { Router } from '@angular/router'
-import { MatSnackBar } from '@angular/material/snack-bar'
 import { AuthService } from '../../../../core/auth/auth.service'
 import { MatCardModule } from '@angular/material/card'
 import { MatInputModule } from '@angular/material/input'
 import { LoginRequest } from '../../../../core/auth/auth.type'
 import { MatButtonModule } from '@angular/material/button'
+import { ToasterService } from '../../../../core/toast/toast.service'
 
 /**
  * Component responsible for user login.
@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
 
   private fb = inject(FormBuilder)
   private authService = inject(AuthService)
-  private snackBar = inject(MatSnackBar)
+  private toaster = inject(ToasterService)
   private router = inject(Router)
 
   constructor() {
@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
 
     if (isUserAuthenticated) {
       this.router.navigate(['home'])
-      this.showSuccessToast('Already Logged In.')
+      this.toaster.open('Already Logged In.')
     }
   }
 
@@ -68,46 +68,19 @@ export class LoginComponent implements OnInit {
 
         if (user) {
           this.router.navigate(['home'])
-          this.showSuccessToast(
+          this.toaster.open(
             `Logged in successfully ! (${user.name.toUpperCase()} - ${
               user.roles[0] ? user.roles[0].toUpperCase() : null
             })`,
           )
         } else {
-          this.handleLoginError(
-            'Incorrect login credentials. Please try again.',
-          )
+          this.toaster.open('Incorrect login credentials. Please try again.')
         }
       } catch (error) {
-        this.handleLoginError('Login failed. Please try again.')
+        this.toaster.open('Login failed. Please try again.')
       }
     } else {
-      this.showErrorToast('Please fill in all required fields.')
+      this.toaster.open('Please fill in all required fields.')
     }
-  }
-
-  /**
-   * Displays a success toast message.
-   */
-  showSuccessToast(message: string) {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-    })
-  }
-
-  /**
-   * Displays an error toast message.
-   */
-  showErrorToast(message: string) {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-    })
-  }
-
-  /**
-   * Handles the actions to be taken on login failure.
-   */
-  handleLoginError(message: string) {
-    this.showErrorToast(message)
   }
 }

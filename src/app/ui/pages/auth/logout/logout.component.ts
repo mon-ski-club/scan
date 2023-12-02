@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core'
-import { MatSnackBar } from '@angular/material/snack-bar'
 import { AuthService } from '../../../../core/auth/auth.service'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
+import { ToasterService } from '../../../../core/toast/toast.service'
 
 /**
  * Component responsible for handling user logout.
@@ -16,7 +16,7 @@ import { MatIconModule } from '@angular/material/icon'
 })
 export class LogoutComponent {
   private authService = inject(AuthService)
-  private snackBar = inject(MatSnackBar)
+  private toaster = inject(ToasterService)
 
   /**
    * Handle the logout process.
@@ -25,27 +25,9 @@ export class LogoutComponent {
   async onLogout() {
     try {
       this.authService.logout()
-      this.showSuccessToast('You have been logged out successfully')
+      this.toaster.open('You have been logged out successfully')
     } catch (error) {
-      this.showErrorToast('Logout failed. Please try again.')
+      this.toaster.open('Logout failed. Please try again.')
     }
-  }
-
-  /**
-   * Displays a success toast message.
-   */
-  showSuccessToast(message: string) {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-    })
-  }
-
-  /**
-   * Displays an error toast message.
-   */
-  showErrorToast(message: string) {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-    })
   }
 }
