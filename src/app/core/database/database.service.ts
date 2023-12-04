@@ -1,208 +1,150 @@
 import {} from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { createRxDatabase } from 'rxdb'
 import {
-  replicateCouchDB,
+  RxDatabase,
+  addRxPlugin,
+  createRxDatabase,
+  RxCollectionCreator,
+  removeRxDatabase,
+  RxStorage,
+} from 'rxdb'
+import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode'
+import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election'
+import { RxDBQueryBuilderPlugin } from 'rxdb/plugins/query-builder'
+import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie'
+import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv'
+
+import {
   getFetchWithCouchDBAuthorization,
+  replicateCouchDB,
 } from 'rxdb/plugins/replication-couchdb'
 import { v4 as uuid } from 'uuid'
 import { environment } from '../../../environments/environment'
-import {
-  APP_COLLECTIONS,
-  AppCollections,
-  AppDatabase,
-  AppSchemas,
-} from '../../../environments/environment.type'
+
+import { EVENT_SCHEMA, EventCollection } from '../events/event.schema'
+import { PERSON_SCHEMA, PersonCollection } from '../persons/person.schema'
+
+interface Collections {
+  events: EventCollection
+  persons: PersonCollection
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class DatabaseService {
-  /**
-   * Initialize RxDB Database
-   */
-  async initializeDatabase() {
-    /* Plugins */
-    environment.DATABASE.addRxDBPlugins()
-
-    /* Creation */
-    const database = await this.createRxDBDatabase()
-
-    /* DevTools */
-    this.addDevTools({ database })
-
-    /* Authentication */
-    const isAuthenticated = await this.authenticateCouchDB()
-
-    /* AuthGuard */
-    if (isAuthenticated) {
-      /* Collections */
-      await this.addRxDBCollections({ database })
-
-      /* Middlewares */
-      this.applyMiddleWares({ database })
-
-      /* Synchronization */
-      // TODO LOG GENERIC
-      this.synchronizeCouchDB({ database, collectionName: 'events' })
-      this.synchronizeCouchDB({ database, collectionName: 'persons' })
-    }
-
-    /* Reinitialization */
-    /* await reinitializeIndexedDB() */
+  collectionCreators: Record<keyof Collections, RxCollectionCreator> = {
+    events: {
+      schema: EVENT_SCHEMA,
+    },
+    persons: {
+      schema: PERSON_SCHEMA,
+    },
   }
 
-  /**
-   * Create RxDB Database
-   */
-  private async createRxDBDatabase(): Promise<AppDatabase> {
-    console.debug('Creating database...')
+  database: RxDatabase<Collections> | null = null
+  storage: RxStorage<any, any> | null = null
 
-    const database = await createRxDatabase<AppCollections>({
-      name: environment.DATABASE.name,
-      storage: environment.DATABASE.getRxStorage(),
-      multiInstance: environment.DATABASE.multiInstance,
+  async initialize() {
+    addRxPlugin(RxDBDevModePlugin)
+    addRxPlugin(RxDBLeaderElectionPlugin)
+    addRxPlugin(RxDBQueryBuilderPlugin)
+
+    this.storage = wrappedValidateAjvStorage({
+      storage: getRxStorageDexie(),
     })
-    console.debug(`Database >>> ${database.name} <<< created !`)
 
-    return database
+    this.database = await createRxDatabase<Collections>({
+      name: environment.name,
+      storage: this.storage,
+      multiInstance: true,
+    })
+
+    this.addDevTools()
+
+    const authenticated = await this.authenticate()
+    if (authenticated) {
+      await this.database?.addCollections(this.collectionCreators)
+
+      this.installIdGenerators()
+
+      this.replicate('events')
+      this.replicate('persons')
+    }
   }
 
-  /**
-   * Add DevTools
-   */
-  private addDevTools({ database }: { database: AppDatabase }) {
-    if (environment.NODE_ENV === 'development') {
-      /**
-       * Allow to interact with CouchDB Database within the browser console.
-       * eg. window.database.insert({...})
-       */
-      ;(window as any)['database'] = database // eslint-disable-line @typescript-eslint/no-explicit-any
+  private addDevTools() {
+    if (environment.name === 'development') {
+      if (this.database) {
+        // Allow to interact with CouchDB Database within the browser console.
+        // eg. window.database.insert({...})
+        ;(window as any)['database'] = this.database // eslint-disable-line @typescript-eslint/no-explicit-any
 
-      /**
-       * Helps identify which instance of RxDB is leader
-       * (Add an icon in the browser Tab)
-       */
-      if (environment.DATABASE.multiInstance) {
-        database.waitForLeadership().then(() => {
+        // Helps identify which instance of RxDB is leader
+        // (Add an icon in the browser Tab)
+        this.database.waitForLeadership().then(() => {
           document.title = `♛ ${document.title}`
         })
       }
     }
   }
 
-  /**
-   * Authenticate CouchDB
-   */
-  private async authenticateCouchDB(): Promise<boolean> {
-    console.debug('Authenticating...')
-
-    const getCouchDB = getFetchWithCouchDBAuthorization(
-      environment.DATABASE.credentials.name,
-      environment.DATABASE.credentials.password,
+  private getSecuredFetch() {
+    return getFetchWithCouchDBAuthorization(
+      environment.user,
+      environment.password,
     )
+  }
 
-    const response = await getCouchDB(
-      `${environment.DATABASE.rxdbSyncUrl}/_session`,
+  // TODO remove as authentication is handle at replication level
+  private async authenticate(): Promise<boolean> {
+    const fetch = this.getSecuredFetch()
+
+    const response = await fetch(`${environment.url}/_session`)
+    return response.ok
+  }
+
+  private installIdGenerators() {
+    const collectionNames = Object.keys(this.collectionCreators)
+    collectionNames.forEach((collection) =>
+      this.installIdGenerator(collection as keyof Collections),
     )
+  }
 
-    if (!response.ok) {
-      console.debug('Authentication failed...')
-
-      return false
+  private installIdGenerator(collectionName: keyof Collections) {
+    if (this.database) {
+      this.database[collectionName].preInsert((doc) => (doc.id = uuid()), false)
     }
-
-    console.debug('Authentication successful !')
-
-    return true
   }
 
-  /**
-   * Add RxDB Collections
-   */
-  private async addRxDBCollections({
-    database,
-  }: {
-    database: AppDatabase
-  }): Promise<void> {
-    console.debug('Adding collections...')
+  private replicate(collectionName: keyof Collections) {
+    if (this.database) {
+      const collection = this.database[collectionName]
 
-    await database.addCollections(APP_COLLECTIONS)
+      const replication = replicateCouchDB({
+        url: `${environment.url}/${collectionName}/`,
+        collection: collection,
+        live: true,
+        fetch: this.getSecuredFetch(),
+        pull: {},
+        push: {},
+      })
 
-    console.debug('Collections added !')
-  }
-
-  /**
-   * Apply Middlewares
-   */
-  private applyMiddleWares({ database }: { database: AppDatabase }): void {
-    Object.keys(APP_COLLECTIONS).forEach((collection) => {
-      database[collection as keyof AppCollections].preInsert(
-        (test: AppSchemas[keyof AppCollections]) => {
-          test.id = uuid()
-        },
-        false,
-      )
-    })
-  }
-
-  /**
-   * Synchronize CouchDB
-   */
-  private synchronizeCouchDB({
-    database,
-    collectionName,
-  }: {
-    database: AppDatabase
-    collectionName: keyof AppCollections
-  }): void {
-    const collection = database[collectionName]
-
-    const onGoingReplication = replicateCouchDB({
-      url: `${environment.DATABASE.rxdbSyncUrl}/${collectionName}/`,
-      collection: collection,
-      live: environment.DATABASE.realTimeReplication,
-      fetch: getFetchWithCouchDBAuthorization(
-        environment.DATABASE.credentials.name,
-        environment.DATABASE.credentials.password,
-      ),
-      pull: {},
-      push: {},
-    })
-
-    onGoingReplication.error$.subscribe(({ parameters: { errors } }) => {
-      console.error(
-        errors &&
-          `Synchronization failed for ${collectionName} : ${
-            errors?.[0]?.parameters?.args.jsonResponse.reason ??
-            'Unknown error.'
-          } Retrying in ${onGoingReplication.retryTime * 0.001}s...`,
-      )
-    })
-
-    console.debug(`Synchronization is now active for : ${collectionName} !`)
-  }
-
-  /**
-   * Reinitialize IndexedDB
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private async reinitializeIndexedDBs() {
-    if (environment.NODE_ENV !== 'development') {
-      return
+      replication.error$.subscribe(({ parameters: { errors } }) => {
+        console.error(
+          errors &&
+            `Synchronization failed for ${collectionName} : ${
+              errors?.[0]?.parameters?.args.jsonResponse.reason ??
+              'Unknown error.'
+            } Retrying in ${replication.retryTime * 0.001}s...`,
+        )
+      })
     }
+  }
 
-    console.debug('Reinitializing IndexedDB databases...')
-
-    const databases = await indexedDB.databases()
-
-    databases.forEach(async (database) => {
-      if (!database.name) {
-        return
-      }
-      indexedDB.deleteDatabase(database.name)
-    })
-
-    console.debug('IndexedDB databases reinitialized !')
+  async reset() {
+    if (this.storage) {
+      removeRxDatabase(environment.name, this.storage)
+    }
   }
 }

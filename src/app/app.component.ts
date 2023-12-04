@@ -1,5 +1,5 @@
-import { Component, ViewEncapsulation } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { Component, ViewEncapsulation } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
 import { DatabaseService } from './core/database/database.service'
 
@@ -12,7 +12,6 @@ import { DatabaseService } from './core/database/database.service'
 })
 export class AppComponent {
   constructor(private databaseService: DatabaseService) {
-    /* Initializing Database */
-    this.databaseService.initializeDatabase()
+    this.databaseService.initialize()
   }
 }
