@@ -1,7 +1,7 @@
 import { RxCollection, RxDocument, RxJsonSchema } from 'rxdb'
+import { Identifiable } from '../database/identifiable'
 
-export interface Person {
-  id: string
+export interface Person extends Identifiable {
   firstName: string
   lastName: string
   gender: string
