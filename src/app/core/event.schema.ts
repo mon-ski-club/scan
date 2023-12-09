@@ -1,5 +1,5 @@
 import { RxCollection, RxDocument, RxJsonSchema } from 'rxdb'
-import { Identifiable } from '../database/identifiable'
+import { Identifiable } from './identifiable'
 
 export interface Event extends Identifiable {
   name: string
