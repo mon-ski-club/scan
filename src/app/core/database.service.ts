@@ -19,10 +19,10 @@ import {
   replicateCouchDB,
 } from 'rxdb/plugins/replication-couchdb'
 import { v4 as uuid } from 'uuid'
-import { environment } from '../../../environments/environment'
+import { environment } from '../../environments/environment'
 
-import { EVENT_SCHEMA, EventCollection } from '../events/event.schema'
-import { PERSON_SCHEMA, PersonCollection } from '../persons/person.schema'
+import { EVENT_SCHEMA, EventCollection } from './event.schema'
+import { PERSON_SCHEMA, PersonCollection } from './person.schema'
 
 interface Collections {
   events: EventCollection
